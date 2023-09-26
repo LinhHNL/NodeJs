@@ -1,66 +1,82 @@
-const httpClient = require('http')
-const url = require('url')
- const students = [
-    { id: 1, name: 'Nguyen Van A', email: 'nguyenvana@example.com' },
-    { id: 2, name: 'Tran Thi B', email: 'tranthib@example.com' },
-    { id: 3, name: 'Le Van C', email: 'levanc@example.com' },
-];
-const sever = http.createServer((req, res) => {
+const http = require('http');
+const url = require('url');
 
-    const parsedUrl = url.parse(req.url, true);
-	if(path.pathname ==="/students" && path.method="get"){
-		res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
-        res.end(JSON.stringify("status:success",students));
+const students = [
+	{ id: 1, name: 'Nguyen Van A', email: 'nguyenvana@example.com' },
+	{ id: 2, name: 'Tran Thi B', email: 'tranthib@example.com' },
+	{ id: 3, name: 'Le Van C', email: 'levanc@example.com' },
+	];
 
-	}
-	if(path.pathname ==="/students" && path="post"){
-		let data = ''
-		req.on('data',chuck=>{
-			data += chuck;
-		});
-		req.on('end'()=>{
-			const newStudent = JSON.parse(data);
-			if(students[students.length-1]){
-				newStudent.id = students[students.length-1].id;
+const server = http.createServer((req, res) => {
+	const parsedUrl = url.parse(req.url, true);
 
-			}else{
-				newStudent.id = 1;
+	if (parsedUrl.pathname === '/students') {
+		if (req.method === 'GET') {
+			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+			res.end(JSON.stringify({ status: 'success', data: students }));
+		} else if (req.method === 'POST') {
+			let data = '';
+			req.on('data', (chunk) => {
+				data += chunk;
+			});
+			req.on('end', () => {
+				const newStudent = JSON.parse(data);
+				if (students[students.length - 1]) {
+					newStudent.id = students[students.length - 1].id + 1;
+				} else {
+					newStudent.id = 1;
+				}
+				students.push(newStudent);
+				res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+				res.end(JSON.stringify({ status: 'success', data: newStudent }));
+			});
+		}
+	} else if (parsedUrl.pathname.startsWith('/students/')) {
+		const id = parseInt(parsedUrl.pathname.split('/').pop());
+		const student = students.find((student) => student.id === id);
+		if (student) {
+			if (req.method === 'GET') {
+				res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+				res.end(JSON.stringify({ status: 'success', data: student }));
+			} else if (req.method === 'PUT') {
+				let data = '';
+				req.on('data', (chunk) => {
+					data += chunk;
+				});
+				req.on('end', () => {
+					const updatedStudent = JSON.parse(data);
+					const studentIndex = students.findIndex((student) => student.id === id);
+					if (studentIndex !== -1) {
+						students[studentIndex].name = updatedStudent.name;
+						students[studentIndex].email = updatedStudent.email;
+
+						res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+						res.end(JSON.stringify({ status: 'success', data: students[studentIndex] }));
+					} else {
+						res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+						res.end(JSON.stringify({ status: 'failed', message: 'Student not found' }));
+					}
+				});
+
+			} else if (req.method === 'DELETE') {
+				const studentIndex = students.findIndex((student) => student.id === id);
+				if (studentIndex !== -1) {
+					const deletedStudent = students.splice(studentIndex, 1);
+
+					res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+					res.end(JSON.stringify({ status: 'success', data: deletedStudent }));
+				} else {
+					res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+					res.end(JSON.stringify({ status: 'failed', message: 'Student not found' }));
+				}
 			}
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });            
-			res.end(JSON.stringify("status:success",newstudent));
-			res.end(JSON.stringify(newItem));
-		})
-	}
-	if(path.pathname ==="/students/" && path.method="get"){
-		const id = parseInt(path.pathname).slip('/').pop();
-		const student = students.find(id); 
-		if(student){
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:success",student));
-		}else{
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:failed",student));
+		} else {
+			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+			res.end(JSON.stringify({ status: 'failed', message: 'Student not found' }));
 		}
 	}
-if(path.pathname ==="/students/" && path.method="put"){
-		const id = parseInt(path.pathname).slip('/').pop();
-		const student = students.find(id); 
-		if(student){
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:success",student));
-		}else{
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:failed",student));
-		}
-	}})
-if(path.pathname ==="/students/" && path.method="delete"){
-		const id = parseInt(path.pathname).slip('/').pop();
-		const student = students.delete(id); 
-		if(student){
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:success",student));
-		}else{
-			res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });          
-			res.end(JSON.stringify("status:failed",student));
-		}
-	}
+});
+
+server.listen(3000, () => {
+	console.log('Server is running on port 3000');
+});
