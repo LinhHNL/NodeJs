@@ -1,0 +1,15 @@
+{
+  "name": "bai4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tinhtoan.js",
+  "scripts": {
+    "start": "node tinhtoan.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

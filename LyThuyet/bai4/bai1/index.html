@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form action="/tinhtoan1" id="tinhtoan" method="post">
+        <label for="a">a:</label>
+        <input type="number" name="num1" id="num1">
+        <br>
+        <label for="b">b:</label>
+        <input type="number" name="num2" id="num2">
+       <br>
+       op:
+        <input type="radio" id="add" name="operation" value="add"> +
+        <input type="radio" id="subtract" name="operation" value="subtract">-
+        <input type="radio" id="multiply" name="operation" value="multiply"> *
+        <input type="radio" id="divide" name="operation" value="divide"> /
+        <br>
+        <button type="submit"> Tính Toán 1</button>
+
+        <button type="button" id="tinhtoan2"> Tính Toán 2</button>
+    </form>
+    
+
+    <div id="result"></div>
+</body>
+<script>
+    document.getElementById('tinhtoan2').addEventListener('click', function() {
+      const num1 = document.getElementById('num1').value;
+      const num2 = document.getElementById('num2').value;
+      const operation = document.querySelector('input[name="operation"]:checked').value;
+      const data = {
+        num1: num1,
+        num2: num2,
+        operation: operation
+    };
+      fetch('/tinhtoan2', {
+        method: 'POST',
+        
+        headers: {
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+
+        document.getElementById('result').innerHTML = 'Kết quả (Tính Toán 2): ' + data.result;
+      })
+      .catch(error => {
+        console.error('Lỗi:', error);
+      });
+    });
+</script>
+</html>
