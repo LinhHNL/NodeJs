@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Link to DataTables CSS via CDN -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+     <a href="/" class="text-dark text-decoration-none">
+        <h1>User Information</h1>
+    </a>
+
+       </div>
+        <div class="d-flex justify-content-between align-items-center">
+   
+        <a href="/addUser" class="btn btn-primary mb-3">Add User</a>
+
+       </div>
+       {{{body}}}
+    </div>
+      <div id="successModal" class="modal" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        Add user successfully. You can continue or go back to the home page to use another service.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+        <a href="/" class="btn btn-secondary">Go Back to Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!-- Link to Bootstrap JS and jQuery via CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- Link to DataTables JS via CDN -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+    <!-- Activate DataTables -->
+  
+</body>
+</html>

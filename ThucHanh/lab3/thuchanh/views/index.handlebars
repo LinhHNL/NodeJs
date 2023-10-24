@@ -1,0 +1,31 @@
+{{#> layouts/main}}
+    <div class="container mt-4">
+        <h2>Danh sách sản phẩm</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Giá</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr>
+                    <th scope="row">{{@index }}</th>
+                    <td>{{this.id}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.price}}</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/product/{{this.id}}">Chi tiết</a>
+                        <a class="btn btn-success btn-sm" href="/edit/{{this.id}}">Sửa</a>
+                        <a class="btn btn-danger btn-sm" href="/delete/{{this.id}}">Xóa</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+{{/layouts/main}}

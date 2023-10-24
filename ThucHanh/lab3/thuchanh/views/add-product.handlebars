@@ -1,0 +1,25 @@
+{{#> layouts/main}}
+    <div class="container mt-4">
+        <h2>Thêm sản phẩm</h2>
+        <form action="/add" method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label" enctype="multipart/form-data">Tên sản phẩm</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Giá bán</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+        
+         <div class="mb-3">
+                <label for="description" class="form-label">Mô tả sản phẩm</label>
+                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Ảnh minh họa</label>
+                <input type="file" class="form-control" id="image" name="image" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+        </form>
+    </div>
+{{/layouts/main}}

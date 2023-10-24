@@ -1,0 +1,90 @@
+<div class="container">
+
+  
+  <form id="update" method="post" action="javascript:void(0);">
+    <h5>User ID : <p id="idUser">{{responseData.id}}</p></h5>
+    <div class="form-group">
+      <label for="name">Enter Name</label>
+      <input type="text" class="form-control" value="{{responseData.name}}" name="name" id="name" placeholder="Enter Name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Enter Email</label>
+      <input type="email" class="form-control" value="{{responseData.email}}"  name="email" id="email" placeholder="Enter Email" required>
+    </div>
+   <div class="form-group">
+    <label for="gender">Gender</label>
+    <select class="form-control" id="gender" name="gender" required>
+        <option value="male" {{#if (eq responseData.gender "male")}}selected{{/if}}>Male</option>
+        <option value="female" {{#if (eq responseData.gender "female")}}selected{{/if}}>Female</option>
+    </select>
+</div>
+
+     <div class="form-group">
+    <label for="status">Status</label>
+    <select class="form-control" id="status" name="status" required>
+        <option value="active" {{#if (eq responseData.status "active")}}selected{{/if}}>Active</option>
+        <option value="inactive" {{#if (eq responseData.status "inactive")}}selected{{/if}}>Inactive</option>
+    </select>
+</div>
+
+
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const addUserForm = document.getElementById('update');
+
+    addUserForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const gender = document.getElementById('gender').value;
+      const status = document.getElementById('status').value;
+      const id = document.getElementById('idUser').value;
+
+      const data = {
+        id ,
+        name,
+        email,
+        gender,
+        status,
+      };
+
+      try {
+        const apiUrl = '/addUser'; // Điều này giả định rằng ứng dụng Express của bạn đang lắng nghe tại cùng một máy chủ và cổng.
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.status ==200) {
+            alert("User update successfully. You can continue or go back to the home page to use another service." );
+        } else {
+          console.error('Lỗi khi thêm người dùng:', response.statusText);
+
+          let errorMessage = 'Unknown error';
+
+          if (response.status === 400) {
+            errorMessage = 'Invalid data. Check your input.';
+          } else if (response.status === 422) {
+            errorMessage = 'Email already exists. Please use a different email.';
+          } else if (response.status === 401) {
+            errorMessage = 'Unauthorized. Check your connection and authentication.';
+          }
+
+        alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Lỗi khi thực hiện yêu cầu:', error);
+      
+      }
+    });
+  });
+</script>

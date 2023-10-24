@@ -1,0 +1,14 @@
+{{#> layouts/main}}
+    <div class="container mt-4">
+        <h2>Chi tiết sản phẩm</h2>
+        <div class="card" style="width: 18rem;">
+            <img src="{{product.image}}" class="card-img-top" alt="{{product.name}}">
+            <div class="card-body">
+                <h5 class="card-title">{{product.name}}</h5>
+                <p class="card-text">{{product.description}}</p>
+                <p class="card-text"><strong>Giá: {{product.price}} đ</strong></p>
+                <a href="/" class="btn btn-primary">Quay lại</a>
+            </div>
+        </div>
+    </div>
+{{/layouts/main}}

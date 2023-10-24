@@ -1,0 +1,101 @@
+<div class="container">
+
+  <div class="form-group">
+  
+</div>
+  <form id="addUserForm" method="post" action="javascript:void(0);">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email" required>
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select class="form-control" id="gender" name="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select class="form-control" id="status" name="status" required>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const successMessage = document.getElementById('successMessage');
+  const addUserForm = document.getElementById('addUserForm');
+
+  addUserForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    // Kiểm tra xem tất cả các trường đã được điền đầy đủ
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const gender = document.getElementById('gender').value;
+    const status = document.getElementById('status').value;
+
+    if (name.trim() === '' || email.trim() === '' || gender === '' || status === '') {
+      alert('Please fill in all the required information before clicking Submit');
+      return; // Ngăn chặn việc gửi dữ liệu nếu có trường chưa được điền
+    }
+
+    // Hiển thị hộp thoại xác nhận
+    const userConfirmed = window.confirm("Do you want to add the user?");
+
+    if (userConfirmed) {
+      const data = {
+        name,
+        email,
+        gender,
+        status,
+      };
+
+      try {
+        const apiUrl = '/addUser'; // Điều này giả định rằng ứng dụng Express của bạn đang lắng nghe tại cùng một máy chủ và cổng.
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.status === 200) {
+          alert('User added successfully. You can continue or go back to the home page to use another service.');
+        } else {
+          console.error('Lỗi khi thêm người dùng:', response.statusText);
+
+          let errorMessage = 'Unknown error';
+
+          if (response.status === 400) {
+            errorMessage = 'Invalid data. Check your input.';
+          } else if (response.status === 422) {
+            errorMessage = 'Email already exists. Please use a different email.';
+          } else if (response.status === 401) {
+            errorMessage = 'Unauthorized. Check your connection and authentication.';
+          }
+
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Lỗi khi thực hiện yêu cầu:', error);
+      }
+    }
+  });
+});
+
+
+
+</script>
