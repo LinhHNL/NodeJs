@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Danh sách sản phẩm</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container my-3">
+    <h4 class="my-5 text-primary text-center text-uppercase">Danh sách người dùng</h4>
+    <a class="btn btn-success btn-sm my-4" href="/add">Thêm người dùng</a>
+    {{#if successMessage }}
+<div id="flash-alert" class="alert alert-success text-center w-25 mx-auto my-3">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <span>{{successMessage}}</span>
+</div>
+{{/if}}
+
+{{#if errorMessage }}
+<div id="flash-alert" class="alert alert-danger text-center w-25 mx-auto my-3">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <span>{{errorMessage}}</span>
+</div>
+{{/if}}
+<div id="thongbao">
+
+</div>
+    <p>Chọn một người dùng để xem chi tiết</p>
+
+    <table class="table table-striped border">
+        <thead>
+        <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each responseData}}
+               <tr data-user-id="{{this.id}}">
+                        <td>{{this.id}}</td>
+                                       <td><a href="/profile/{{this.id}}">{{this.name}}</a></td>
+               
+                        <td>{{this.email}}</td>
+                        <td>{{this.gender}}</td>
+                        {{#if (eq this.status "active")}}
+                            <td style="color: green;">{{this.status}}</td>
+                        {{else}}
+                            <td style="color: red;">{{this.status}}</td>
+                        {{/if}}
+                      
+                            <td>
+        <button class="btn btn-sm btn-outline-primary edit-user">Chỉnh sửa</button>
+        <button class="btn btn-sm btn-outline-danger delete-user">Xóa</button>
+    </td>
+                    </tr>
+                    {{/each}}
+                  
+                </tbody>
+    </table>
+    <p>Tổng số người dùng: <strong class="text-danger">{{pageSize}}</strong></p>
+</div>
+
+
+
+<!-- Confirm delete -->
+<div class="modal" id="confirmDeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Xóa người dùng</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p>Bạn có chắc rằng muốn xóa người dùng <strong id="deleteUserName"></strong>?</p>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" href="" class="btn btn-danger">Xóa</button>
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Confirm delete -->
+
+
+<!-- Update user -->
+<div class="modal" id="updateUserModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Update </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+   
+                <input type="hidden" id="id" name="id" value="">
+
+            <div class="form-group">
+               
+                <label for="name">Name</label>
+                <input class="form-control" type="text" placeholder="Enter Name" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="gender-male" name="gender">
+                    <label class="custom-control-label" for="gender-male">Male</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="gender-female" name="gender">
+                    <label class="custom-control-label" for="gender-female">Female</label>
+                </div>
+            </div>
+                <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" type="text" placeholder="Enter email" id="email" name="email">
+            </div>
+           <div class="form-group">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="status-active" name="status">
+                    <label class="custom-control-label" for="status-active">Active</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="status-inactive" name="status">
+                    <label class="custom-control-label" for="status-inactive">Inactive</label>
+                </div>
+            </div>
+
+            <div class="alert alert-danger" id="updateUserError">
+                Vui lòng nhập đầy đủ thông tin
+            </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="updateUserButton">Cập nhật</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    setTimeout(() => {
+        $('#flash-alert').fadeOut(2000)
+    }, 1000);
+    $(document).ready(function () {
+        $('.edit-user').click(function (e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            var userId = row.find('td:eq(0)').text();
+            var userName = row.find('td:eq(1) a').text();
+            var gender = row.find('td:eq(3)').text();
+            var status = row.find('td:eq(4)').text();
+            var email = row.find('td:eq(2)').text();
+
+            $('#name').val(userName);
+            $('#id').val(userId);
+            $('#gender-male').prop('checked', gender === 'male');
+            $('#gender-female').prop('checked', gender === 'female');
+            $('#status-active').prop('checked', status === 'active');
+            $('#status-inactive').prop('checked', status === 'inactive');
+            $('#email').val(email);
+
+            $('#updateUserModal').modal('show');
+        });
+    var idDelete;
+        $('.delete-user').click(function (e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            var userName = row.find('td:eq(1) a').text();
+             idDelete = row.find('td:eq(0)').text();
+             $('#confirmDeleteModal .modal-body strong').text(userName);
+            $('#confirmDeleteModal').modal('show');
+        });
+        
+        $('#confirmDeleteModal .modal-footer .btn-danger').click(function (e) {
+            e.preventDefault();
+            $('#confirmDeleteModal').modal('hide'); 
+
+        $.ajax({
+            url: '/delete/' + idDelete, 
+            type: 'DELETE',
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function () {
+
+            }
+    });
+                window.location.reload();
+
+});
+    });
+  document.getElementById("updateUserError").style.display = "none";
+
+document.getElementById("updateUserButton").addEventListener("click", function() {
+  const id = document.getElementById("id").value;
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const gender = document.querySelector('input[name="gender"]:checked').value;
+  const status = document.querySelector('input[name="status"]:checked').value;
+  
+      const data = {
+        id ,
+        name,
+        email,
+        gender,
+        status,
+      };
+
+
+console.log(data);
+    
+  fetch("/update", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    if (result.success) {
+            $('#updateUserModal').modal('hide');
+       
+    
+      } else {
+        document.getElementById("updateUserError").style.display = "block";
+      let errorMessage = result.message || "Lỗi khi cập nhật dữ liệu";
+if (Array.isArray(result.message)) {
+  errorMessage = '';
+  for (let i = 0; i < result.message.length; i++) {
+    errorMessage += result.message[i].msg + '<br>';
+  }
+  console.log(result.message);
+}
+
+document.getElementById("updateUserError").innerHTML = errorMessage;
+
+        console.error("Cập nhật không thành công");
+      }
+    })
+    .catch(error => {
+      document.getElementById("updateUserError").style.display = "block";
+      document.getElementById("updateUserError").innerHTML = "Lỗi khi gửi yêu cầu cập nhật";
+      console.error("Lỗi khi gửi yêu cầu cập nhật:", error);
+    });
+});
+</script>
+
+
+</body>
+</html>
